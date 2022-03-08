@@ -9,7 +9,7 @@
                 <H1>Bibliographie</H1>
                 <element_a_recuperer>
                     <ul>
-                        <xsl:apply-templates select="//Countries/*[contains(local-name(),$code)]/.." />
+                        <xsl:apply-templates select="//Country[contains(cca2,$code)]/capital" />
                     </ul>
                 </element_a_recuperer>
             </BODY>

@@ -85,20 +85,10 @@ function setDetails(code) {
   // Création du document XML transformé par le XSL
   var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
 
-  //extraction des noms à partir du document XML (avec une feuille de style ou en javascript)
-  var lesNoms = xmlDocument.getElementsByTagName("capital");
-
   // Parcours de la liste des noms avec une boucle for et
   // construction d'une chaine de charactčres contenant les noms séparés par des espaces
   // Pour avoir la longueur d'une liste : attribut 'length'
   // Accčs au texte d'un noeud "LastName" : NOM_NOEUD.firstChild.nodeValue
-  var chaineDesNoms = "";
-  for (i = 0; i < lesNoms.length; i++) {
-    if (i > 0) {
-      chaineDesNoms = chaineDesNoms + ", ";
-    }
-    chaineDesNoms = chaineDesNoms + lesNoms[i].innerHTML + " ";
-  }
 
   // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
   var elementHtmlParent = window.document.getElementById(
