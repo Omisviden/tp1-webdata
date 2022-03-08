@@ -64,12 +64,9 @@ function changeBackground(color) {
   document.body.style.backgroundColor = color; // C'est pas du bleu mais ça fait moins mal aux yeux
 }
 
-function setDetails(code) {
-  let xmlDocumentUrl = "../countriesTP.xml";
-  let xslDocumentUrl = "../cherchePays.xsl";
-
+function getProcessedXML(xml, xsl, param) {
   // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone
-  var xslDocument = chargerHttpXML(xslDocumentUrl);
+  var xslDocument = chargerHttpXML(xsl);
 
   //création d'un processuer XSL
   var xsltProcessor = new XSLTProcessor();
@@ -77,19 +74,25 @@ function setDetails(code) {
   // Importation du .xsl
   xsltProcessor.importStylesheet(xslDocument);
 
-  //passage du paramčtre à la feuille de style
-  xsltProcessor.setParameter("", "code", code);
+  if (param) {
+    //passage du paramčtre à la feuille de style
+    xsltProcessor.setParameter("", "code", param);
+  }
 
-  var xmlDocument = chargerHttpXML(xmlDocumentUrl);
+  var xmlDocument = chargerHttpXML(xml);
 
   // Création du document XML transformé par le XSL
-  var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
+  return xsltProcessor.transformToDocument(xmlDocument);
+}
 
+function setDetails(code) {
+  let xml = "../countriesTP.xml";
+  let xsl = "../cherchePays.xml";
   // Parcours de la liste des noms avec une boucle for et
   // construction d'une chaine de charactčres contenant les noms séparés par des espaces
   // Pour avoir la longueur d'une liste : attribut 'length'
   // Accčs au texte d'un noeud "LastName" : NOM_NOEUD.firstChild.nodeValue
-
+  getProcessedXML(xml, xsl, code);
   // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
   var elementHtmlParent = window.document.getElementById(
     "id_element_a_remplacer"
@@ -101,25 +104,6 @@ function setDetails(code) {
   )[0].innerHTML;
 
   // Question 11
-  xslDocumentUrl = "../getSameLangCodes.xsl";
-
-  // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone
-  var xslDocument = chargerHttpXML(xslDocumentUrl);
-
-  //création d'un processuer XSL
-  var xsltProcessor = new XSLTProcessor();
-
-  // Importation du .xsl
-  xsltProcessor.importStylesheet(xslDocument);
-
-  //passage du paramčtre à la feuille de style
-  xsltProcessor.setParameter("", "code", code);
-
-  var xmlDocument = chargerHttpXML(xmlDocumentUrl);
-
-  // Création du document XML transformé par le XSL
-  var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
-
 }
 
 // Question 4
@@ -158,30 +142,13 @@ function makeHoverable(id) {
     c.addEventListener("mouseover", highlightCountry);
     c.addEventListener("mouseleave", resetCountry);
   }
-  // svg.addEventListener("mouseleave", resetCountry);
-  // svg.addEventListener("mouseover", highlightCountry);
 }
 
 function getCountryDetails(code) {
   let xmlDocumentUrl = "../countriesTP.xml";
   let xslDocumentUrl = "../cherchePaysPlus.xsl";
 
-  // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone
-  var xslDocument = chargerHttpXML(xslDocumentUrl);
-
-  //création d'un processeur XSL
-  var xsltProcessor = new XSLTProcessor();
-
-  // Importation du .xsl
-  xsltProcessor.importStylesheet(xslDocument);
-
-  //passage du paramčtre à la feuille de style
-  xsltProcessor.setParameter("", "code", code);
-
-  var xmlDocument = chargerHttpXML(xmlDocumentUrl);
-
-  // Création du document XML transformé par le XSL
-  var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
+  var newXmlDocument = getProcessedXML(xmlDocumentUrl, xslDocumentUrl, code);
 
   // Parcours de la liste des noms avec une boucle for et
   // construction d'une chaine de charactčres contenant les noms séparés par des espaces
@@ -196,6 +163,10 @@ function getCountryDetails(code) {
   elementHtmlParent.appendChild(
     newXmlDocument.getElementsByTagName("countryinfo")[0]
   );
+  fetch("https://restcountries.com/v2/alpha/" + code)
+  .then(function (response) {
+    console.log(response);
+  })
 }
 
 function highlightCountry(e) {
@@ -215,7 +186,18 @@ function resetCountry(e) {
 
 function populateDatalist() {
   let datalist = document.getElementById("codelist");
+  let xsl = "../getAllCodes.xsl";
+  let xml = "../countriesTP.xml";
+
+  let newXml = getProcessedXML(xml, xsl, null);
   
+  let codes = newXml.firstChild.innerHTML.split(" ");
+  console.log(codes);
+  codes.forEach((code) => {
+    let option = document.createElement("option");
+    option.value = code;
+    datalist.appendChild(option);
+  })
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
