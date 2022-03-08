@@ -17,9 +17,9 @@
     </xsl:template>
     <xsl:template match="Countries">
         <LI>
-            <xsl:value-of select=".//Author" />
+            <xsl:value-of select=".//comm_name" />
             :
-            <xsl:value-of select=".//Title" />
+            <xsl:value-of select=".//capital" />
             .
         </LI>
     </xsl:template>

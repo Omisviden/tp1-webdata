@@ -101,6 +101,15 @@ function setDetails(code) {
   )[0].innerHTML;
 }
 
+// Question 4
+function loadSVG(path) {
+  let svgAsXML = chargerHttpXML(path);
+  let svgAsString = new XMLSerializer().serializeToString(svgAsXML);
+  // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
+  var elementHtmlParent = window.document.getElementById("svgdiv");
+  elementHtmlParent.innerHTML = svgAsString;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Bouton2_ajaxEmployees(xmlDocumentUrl) {
   var xmlDocument = chargerHttpXML(xmlDocumentUrl);
