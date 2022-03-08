@@ -5,6 +5,13 @@
     <xsl:output method="html" />
     <xsl:template match="/">
                 <countryinfo>
+                     <tr bgcolor = "yellow">
+                        <td> Country Name </td>
+                        <td> Capital </td>
+                        <td> Spoken languages </td>
+                        <td> Flag </td>
+                    </tr>
+
                     <tr>
                         <td>
                             <xsl:apply-templates select="//country[country_codes/cca2=$code]/c_name/of_name" />
@@ -14,6 +21,7 @@
                         </td>
                         <td>
                             <xsl:apply-templates select="//country[country_codes/cca2=$code]/languages" />
+                        
                         </td>
                         <td>
                             <img>

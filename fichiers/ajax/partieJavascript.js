@@ -103,7 +103,7 @@ function setDetails(code) {
     "element_a_recuperer"
   )[0].innerHTML;
 
-  // Question 11
+  
 }
 
 // Question 4
@@ -148,6 +148,13 @@ function getCountryDetails(code) {
   let xmlDocumentUrl = "../countriesTP.xml";
   let xslDocumentUrl = "../cherchePaysPlus.xsl";
 
+//Question 10: complétez les infromations affichées au bouton 8 avec le nom de la monnaie du pays
+  let urlJson = "https://restcountries.com/v2/alpha/" + code;
+  let jsonData = chargerHttpJSON(urlJson);
+  let currency =  jsonData.currencies[0].name;
+  p = document.createElement("p");
+  p.innerHTML = "The currency of this country is "+ currency;
+
   var newXmlDocument = getProcessedXML(xmlDocumentUrl, xslDocumentUrl, code);
 
   // Parcours de la liste des noms avec une boucle for et
@@ -160,15 +167,16 @@ function getCountryDetails(code) {
 
   // insérer l'élement transformé dans la page html
   elementHtmlParent.removeChild(elementHtmlParent.lastChild);
+  let lastElem = elementHtmlParent.lastChild;
+  if(lastElem!= undefined) elementHtmlParent.removeChild(lastElem);
   elementHtmlParent.appendChild(
     newXmlDocument.getElementsByTagName("countryinfo")[0]
   );
-  fetch("https://restcountries.com/v2/alpha/" + code)
-  .then(function (response) {
-    console.log(response);
-  })
+  elementHtmlParent.appendChild(p);
+
 }
 
+//Question 8 suite: changez la couleur de pays quand la souris est en dessus
 function highlightCountry(e) {
   if (e.target.attributes.id != undefined) {
     // Change color of country to green
@@ -183,6 +191,9 @@ function resetCountry(e) {
   console.log("Country left");
   e.target.style.fill = "#CCCCCC";
 }
+
+
+//Question 9: complétez le champ de saisie du bouton 3 avec une fonction d'autocomplétion
 
 function populateDatalist() {
   let datalist = document.getElementById("codelist");
@@ -199,6 +210,12 @@ function populateDatalist() {
     datalist.appendChild(option);
   })
 }
+
+
+//Question 11: Coloriez en vert  sur  le plan les pays où les  langues du pays sélectionné 
+// dans le  champ de saisie du bouton  3 sont également parlées
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Bouton2_ajaxEmployees(xmlDocumentUrl) {
