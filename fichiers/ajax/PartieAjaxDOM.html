@@ -38,11 +38,49 @@
       name="button4"
       type="button"
       id="myButton4"
-      onClick="loadSVG('exemple.svg');"
+      onClick="loadSVG('exemple.svg', 'svgdivexemple');"
       value="4. Charger et afficher un svg"
     />
-    <div id="svgdiv"></div>
 
+    <input
+      name="button5"
+      type="button"
+      id="myButton5"
+      onClick="makeClickable('svgdivexemple', exempleClicked);"
+      value="5. Rendre le SVG cliquable"
+    />
+
+    <input
+      name="button6"
+      type="button"
+      id="myButton6"
+      onClick="loadSVG('worldHigh.svg', 'svgdivworld');"
+      value="6. Charger la carte du monde"
+    />
+
+    <input
+      name="button7"
+      type="button"
+      id="myButton7"
+      onClick="makeClickable('svgdivworld', worldClicked);"
+      value="7. Rendre le monde cliquable"
+    />
+
+    <input
+      name="button8"
+      type="button"
+      id="myButton8"
+      onClick="makeHoverable('svgdivworld');"
+      value="8. Capter les mouvements de souris sur la carte"
+    />
+
+    <p id="svgpexemple"></p>
+    <p id="svgpworld"></p>
+    <table id="countryinfo">
+    </table>
+    
+    <div id="svgdivexemple"></div>
+    <div id="svgdivworld"></div>
     <p>
       Remplace le texte "LES NOMS" avec le contenu du champ de saisi: <br />
       <input

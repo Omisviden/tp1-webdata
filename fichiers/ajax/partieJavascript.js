@@ -102,12 +102,94 @@ function setDetails(code) {
 }
 
 // Question 4
-function loadSVG(path) {
+function loadSVG(path, divid) {
   let svgAsXML = chargerHttpXML(path);
   let svgAsString = new XMLSerializer().serializeToString(svgAsXML);
   // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
-  var elementHtmlParent = window.document.getElementById("svgdiv");
+  var elementHtmlParent = window.document.getElementById(divid);
   elementHtmlParent.innerHTML = svgAsString;
+}
+
+// Question 5
+function makeClickable(id, func) {
+  let svg = document.getElementById(id);
+  svg.addEventListener("mousedown", func);
+}
+
+function exempleClicked(e) {
+  let svgp = document.getElementById("svgpexemple");
+  if (e.target.attributes.title != undefined)
+    svgp.innerHTML = e.target.attributes.title.value;
+}
+
+// Question 7
+function worldClicked(e) {
+  let svgp = document.getElementById("svgpworld");
+  if (e.target.attributes.countryname != undefined)
+    svgp.innerHTML = e.target.attributes.countryname.value;
+}
+
+// Question 8
+function makeHoverable(id) {
+  let svg = document.getElementById(id);
+  svg.addEventListener("mouseover", highlightCountry);
+  svg.addEventListener("mouseleave", resetCountry);
+}
+
+function getCountryDetails(code) {
+  let xmlDocumentUrl = "../countriesTP.xml";
+  let xslDocumentUrl = "../cherchePaysPlus.xsl";
+
+  // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone
+  var xslDocument = chargerHttpXML(xslDocumentUrl);
+
+  //création d'un processuer XSL
+  var xsltProcessor = new XSLTProcessor();
+
+  // Importation du .xsl
+  xsltProcessor.importStylesheet(xslDocument);
+
+  //passage du paramčtre à la feuille de style
+  console.log(code);
+  xsltProcessor.setParameter("", "code", code);
+
+  var xmlDocument = chargerHttpXML(xmlDocumentUrl);
+
+  // Création du document XML transformé par le XSL
+  var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
+
+  // Parcours de la liste des noms avec une boucle for et
+  // construction d'une chaine de charactčres contenant les noms séparés par des espaces
+  // Pour avoir la longueur d'une liste : attribut 'length'
+  // Accčs au texte d'un noeud "LastName" : NOM_NOEUD.firstChild.nodeValue
+
+  // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
+  var elementHtmlParent = window.document.getElementById(
+    "id_element_a_remplacer"
+  );
+
+  // insérer l'élement transformé dans la page html
+  elementHtmlParent.innerHTML = newXmlDocument.getElementsByTagName(
+    "countryinfo"
+  )[0].innerHTML;
+}
+
+function highlightCountry(e) {
+  if (e.target.attributes.id != undefined) {
+    let svgtr = document.getElementById("countryinfo").rows;
+    // Create all cells
+    let nameCell = document.getElementById("countryname");
+    let capitalCell = document.getElementById("countrycap");
+    let languageCell = document.getElementById("countrylang");
+    let flagCell = document.getElementById("countryflag");
+
+    // Insert data into cells
+    getCountryDetails(e.target.attributes.id.value);
+  }
+}
+
+function resetCountry(e) {
+  console.log("Country left");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
