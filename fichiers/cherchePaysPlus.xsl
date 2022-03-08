@@ -4,9 +4,6 @@
     <xsl:param name="code" />
     <xsl:output method="html" />
     <xsl:template match="/">
-        <HTML>
-            <BODY bgcolor="#FFFFCC">
-                <H1>Bibliographie</H1>
                 <countryinfo>
                     <tr>
                         <td>
@@ -17,13 +14,12 @@
                         </td>
                         <td>
                             <xsl:apply-templates select="//country[country_codes/cca2=$code]/languages" />
-
                         </td>
                         <td>
                             <img>
                                 <xsl:attribute name="src">
                                     <xsl:text>http://www.geonames.org/flags/x/</xsl:text>
-                                    <xsl:value-of select="translate(//country/country_codes/cca2, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" />
+                                    <xsl:value-of select="translate($code, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" />
                                     <xsl:text>.gif</xsl:text>
                                 </xsl:attribute>
                                 <xsl:attribute name="alt"></xsl:attribute>
@@ -33,8 +29,6 @@
                         </td>
                     </tr>
                 </countryinfo>
-            </BODY>
-        </HTML>
     </xsl:template>
     <xsl:template match="Countries">
         <LI>

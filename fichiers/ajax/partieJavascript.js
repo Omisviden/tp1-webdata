@@ -99,6 +99,27 @@ function setDetails(code) {
   elementHtmlParent.innerHTML = newXmlDocument.getElementsByTagName(
     "element_a_recuperer"
   )[0].innerHTML;
+
+  // Question 11
+  xslDocumentUrl = "../getSameLangCodes.xsl";
+
+  // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone
+  var xslDocument = chargerHttpXML(xslDocumentUrl);
+
+  //création d'un processuer XSL
+  var xsltProcessor = new XSLTProcessor();
+
+  // Importation du .xsl
+  xsltProcessor.importStylesheet(xslDocument);
+
+  //passage du paramčtre à la feuille de style
+  xsltProcessor.setParameter("", "code", code);
+
+  var xmlDocument = chargerHttpXML(xmlDocumentUrl);
+
+  // Création du document XML transformé par le XSL
+  var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
+
 }
 
 // Question 4
@@ -132,8 +153,13 @@ function worldClicked(e) {
 // Question 8
 function makeHoverable(id) {
   let svg = document.getElementById(id);
-  svg.addEventListener("mouseover", highlightCountry);
-  svg.addEventListener("mouseleave", resetCountry);
+  let countries = svg.getElementsByTagName("g")[0].children;
+  for (const c of countries) {
+    c.addEventListener("mouseover", highlightCountry);
+    c.addEventListener("mouseleave", resetCountry);
+  }
+  // svg.addEventListener("mouseleave", resetCountry);
+  // svg.addEventListener("mouseover", highlightCountry);
 }
 
 function getCountryDetails(code) {
@@ -143,14 +169,13 @@ function getCountryDetails(code) {
   // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone
   var xslDocument = chargerHttpXML(xslDocumentUrl);
 
-  //création d'un processuer XSL
+  //création d'un processeur XSL
   var xsltProcessor = new XSLTProcessor();
 
   // Importation du .xsl
   xsltProcessor.importStylesheet(xslDocument);
 
   //passage du paramčtre à la feuille de style
-  console.log(code);
   xsltProcessor.setParameter("", "code", code);
 
   var xmlDocument = chargerHttpXML(xmlDocumentUrl);
@@ -164,24 +189,19 @@ function getCountryDetails(code) {
   // Accčs au texte d'un noeud "LastName" : NOM_NOEUD.firstChild.nodeValue
 
   // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
-  var elementHtmlParent = window.document.getElementById(
-    "id_element_a_remplacer"
-  );
+  var elementHtmlParent = window.document.getElementById("countryinfo");
 
   // insérer l'élement transformé dans la page html
-  elementHtmlParent.innerHTML = newXmlDocument.getElementsByTagName(
-    "countryinfo"
-  )[0].innerHTML;
+  elementHtmlParent.removeChild(elementHtmlParent.lastChild);
+  elementHtmlParent.appendChild(
+    newXmlDocument.getElementsByTagName("countryinfo")[0]
+  );
 }
 
 function highlightCountry(e) {
   if (e.target.attributes.id != undefined) {
-    let svgtr = document.getElementById("countryinfo").rows;
-    // Create all cells
-    let nameCell = document.getElementById("countryname");
-    let capitalCell = document.getElementById("countrycap");
-    let languageCell = document.getElementById("countrylang");
-    let flagCell = document.getElementById("countryflag");
+    // Change color of country to green
+    e.target.style.fill = "#1aff1a";
 
     // Insert data into cells
     getCountryDetails(e.target.attributes.id.value);
@@ -190,6 +210,12 @@ function highlightCountry(e) {
 
 function resetCountry(e) {
   console.log("Country left");
+  e.target.style.fill = "#CCCCCC";
+}
+
+function populateDatalist() {
+  let datalist = document.getElementById("codelist");
+  
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

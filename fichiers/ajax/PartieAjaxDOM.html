@@ -3,8 +3,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>TP 3IF Ajax</title>
     <meta name="author" content="Elöd EGYED-ZSIGMOND" />
-
     <script type="text/javascript" src="partieJavascript.js"></script>
+
+    <link rel="stylesheet" href="ajaxdom.css">
   </head>
 
   <body>
@@ -31,8 +32,9 @@
       onClick="setDetails(document.getElementById('myText1').value);"
       value="3. Affiche le nom officiel et la capitale du pays dont le code est sélectionné dans le champ de saisie."
     />
-    <input name="text" type="text" id="myText1" value="Toto" />
-
+    <input name="text" type="text" list="codelist" id="myText1" value="Toto" />
+    <datalist id="codelist" onload="populateDatalist">
+    </datalist>
 
     <input
       name="button4"
@@ -78,7 +80,6 @@
     <p id="svgpworld"></p>
     <table id="countryinfo">
     </table>
-    
     <div id="svgdivexemple"></div>
     <div id="svgdivworld"></div>
     <p>
