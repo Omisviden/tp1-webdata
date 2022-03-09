@@ -135,27 +135,35 @@ function worldClicked(e) {
 }
 
 // Question 8
-function makeHoverable(id) {
+function makeHoverable(id,showCur) {
   let svg = document.getElementById(id);
   let countries = svg.getElementsByTagName("g")[0].children;
-  for (const c of countries) {
-    c.addEventListener("mouseover", highlightCountry);
-    c.addEventListener("mouseleave", resetCountry);
+  if (showCur)
+  {
+      for (const c of countries) {
+      c.addEventListener("mouseover", highlightCountryWCurrency);
+      c.addEventListener("mouseleave", resetCountry);
+      }
   }
+  else
+  {
+      for (const c of countries) {
+      c.addEventListener("mouseover", highlightCountry);
+      c.addEventListener("mouseleave", resetCountry);
+
+    }
+
+
+  }
+
+
 }
 
-function getCountryDetails(code) {
+function getCountryDetails(code,showCurrency) {
   let xmlDocumentUrl = "../countriesTP.xml";
   let xslDocumentUrl = "../cherchePaysPlus.xsl";
-
-//Question 10: complétez les infromations affichées au bouton 8 avec le nom de la monnaie du pays
-  let urlJson = "https://restcountries.com/v2/alpha/" + code;
-  let jsonData = chargerHttpJSON(urlJson);
-  let currency =  jsonData.currencies[0].name;
-  p = document.createElement("p");
-  p.innerHTML = "The currency of this country is "+ currency;
-
   var newXmlDocument = getProcessedXML(xmlDocumentUrl, xslDocumentUrl, code);
+
 
   // Parcours de la liste des noms avec une boucle for et
   // construction d'une chaine de charactčres contenant les noms séparés par des espaces
@@ -169,10 +177,20 @@ function getCountryDetails(code) {
   elementHtmlParent.removeChild(elementHtmlParent.lastChild);
   let lastElem = elementHtmlParent.lastChild;
   if(lastElem!= undefined) elementHtmlParent.removeChild(lastElem);
-  elementHtmlParent.appendChild(
+   elementHtmlParent.appendChild(
     newXmlDocument.getElementsByTagName("countryinfo")[0]
   );
-  elementHtmlParent.appendChild(p);
+
+  //Question 10: complétez les infromations affichées au bouton 8 avec le nom de la monnaie du pays
+
+  if (showCurrency){
+    let urlJson = "https://restcountries.com/v2/alpha/" + code;
+    let jsonData = chargerHttpJSON(urlJson);
+      let currency =  jsonData.currencies[0].name;
+    p = document.createElement("p");
+    p.innerHTML = "The currency of this country is "+ currency;
+    elementHtmlParent.appendChild(p);
+  }
 
 }
 
@@ -183,12 +201,21 @@ function highlightCountry(e) {
     e.target.style.fill = "#1aff1a";
 
     // Insert data into cells
-    getCountryDetails(e.target.attributes.id.value);
+    getCountryDetails(e.target.attributes.id.value,false);
+  }
+}
+
+function highlightCountryWCurrency(e) {
+  if (e.target.attributes.id != undefined) {
+    // Change color of country to green
+    e.target.style.fill = "#1aff1a";
+
+    // Insert data into cells
+    getCountryDetails(e.target.attributes.id.value,true);
   }
 }
 
 function resetCountry(e) {
-  console.log("Country left");
   e.target.style.fill = "#CCCCCC";
 }
 
