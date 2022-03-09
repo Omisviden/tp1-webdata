@@ -121,7 +121,6 @@ function setDetails(code) {
   languages = languages.map(function (lang) {
     return lang.trim();
   });
-  // console.log(languages);
 
   // Get all countries and their associated languages
   xsl = "../getAllCountriesLangsAsRaw.xsl";
@@ -244,7 +243,7 @@ function getCountryDetails(code, showCurrency) {
   }
 }
 
-//Question 8 suite: changez la couleur de pays quand la souris est en dessus
+// Question 8 suite: changez la couleur de pays quand la souris est en dessus
 function highlightCountry(e) {
   if (e.target.attributes.id != undefined) {
     // Change color of country to green
@@ -268,7 +267,7 @@ function resetCountry(e) {
   e.target.style.fill = "#CCCCCC";
 }
 
-//Question 9: complétez le champ de saisie du bouton 3 avec une fonction d'autocomplétion
+// Question 9: complétez le champ de saisie du bouton 3 avec une fonction d'autocomplétion
 function populateDatalist() {
   let datalist = document.getElementById("codelist");
   let xsl = "../getAllCodes.xsl";
@@ -277,108 +276,9 @@ function populateDatalist() {
   let newXml = getProcessedXML(xml, xsl, null);
 
   let codes = newXml.firstChild.innerHTML.split(" ");
-  console.log(codes);
   codes.forEach((code) => {
     let option = document.createElement("option");
     option.value = code;
     datalist.appendChild(option);
   });
-}
-
-//Question 11: Coloriez en vert  sur  le plan les pays où les  langues du pays sélectionné
-// dans le  champ de saisie du bouton  3 sont également parlées
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function Bouton2_ajaxEmployees(xmlDocumentUrl) {
-  var xmlDocument = chargerHttpXML(xmlDocumentUrl);
-
-  //extraction des noms à partir du document XML (avec une feuille de style ou en javascript)
-  var lesNoms = xmlDocument.getElementsByTagName("LastName");
-
-  // Parcours de la liste des noms avec une boucle for et
-  // construction d'une chaine de charactčres contenant les noms séparés par des espaces
-  // Pour avoir la longueur d'une liste : attribut 'length'
-  // Accčs au texte d'un noeud "LastName" : NOM_NOEUD.firstChild.nodeValue
-  var chaineDesNoms = "";
-  for (i = 0; i < lesNoms.length; i++) {
-    if (i > 0) {
-      chaineDesNoms = chaineDesNoms + ", ";
-    }
-    chaineDesNoms = chaineDesNoms + lesNoms[i].firstChild.nodeValue + " ";
-  }
-
-  // Appel (ou recopie) de la fonction setNom(...) ou bien autre façon de modifier le texte de l'élément "span"
-  setNom(chaineDesNoms);
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function Bouton3_ajaxBibliographie(
-  xmlDocumentUrl,
-  xslDocumentUrl,
-  baliseElementARecuperer
-) {
-  // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone
-  var xslDocument = chargerHttpXML(xslDocumentUrl);
-
-  //création d'un processuer XSL
-  var xsltProcessor = new XSLTProcessor();
-
-  // Importation du .xsl
-  xsltProcessor.importStylesheet(xslDocument);
-
-  // Chargement du fichier XML à l'aide de XMLHttpRequest synchrone
-  var xmlDocument = chargerHttpXML(xmlDocumentUrl);
-
-  // Création du document XML transformé par le XSL
-  var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
-
-  // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
-  var elementHtmlParent = window.document.getElementById(
-    "id_element_a_remplacer"
-  );
-
-  // insérer l'élement transformé dans la page html
-  elementHtmlParent.innerHTML = newXmlDocument.getElementsByTagName(
-    "element_a_recuperer"
-  )[0].innerHTML;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function Bouton4_ajaxBibliographieAvecParametres(
-  xmlDocumentUrl,
-  xslDocumentUrl,
-  baliseElementARecuperer,
-  paramXSL_type_reference
-) {
-  // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone
-  var xslDocument = chargerHttpXML(xslDocumentUrl);
-
-  //création d'un processuer XSL
-  var xsltProcessor = new XSLTProcessor();
-
-  // Importation du .xsl
-  xsltProcessor.importStylesheet(xslDocument);
-
-  //passage du paramčtre à la feuille de style
-  xsltProcessor.setParameter("", "param_ref_type", paramXSL_type_reference);
-
-  // Chargement du fichier XML à l'aide de XMLHttpRequest synchrone
-  var xmlDocument = chargerHttpXML(xmlDocumentUrl);
-
-  // Création du document XML transformé par le XSL
-  var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
-
-  // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
-  var elementHtmlParent = window.document.getElementById(
-    "id_element_a_remplacer"
-  );
-
-  // insérer l'élement transformé dans la page html
-  elementHtmlParent.innerHTML = newXmlDocument.getElementsByTagName(
-    baliseElementARecuperer
-  )[0].innerHTML;
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function Bouton4_ajaxEmployeesTableau(xmlDocumentUrl, xslDocumentUrl) {
-  //commenter la ligne suivante qui affiche la boîte de dialogue!
-  alert("Fonction à compléter...");
 }
