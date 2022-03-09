@@ -217,9 +217,11 @@ function getCountryDetails(code) {
   var elementHtmlParent = window.document.getElementById("countryinfo");
 
   // insérer l'élement transformé dans la page html
-  elementHtmlParent.removeChild(elementHtmlParent.lastChild);
-  let lastElem = elementHtmlParent.lastChild;
-  if (lastElem != undefined) elementHtmlParent.removeChild(lastElem);
+  let child = elementHtmlParent.lastElementChild;
+  while (child) {
+    elementHtmlParent.removeChild(child);
+    child = elementHtmlParent.lastElementChild;
+  }
   elementHtmlParent.appendChild(
     newXmlDocument.getElementsByTagName("countryinfo")[0]
   );
