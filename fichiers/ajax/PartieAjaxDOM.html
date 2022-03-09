@@ -5,7 +5,7 @@
     <meta name="author" content="Elöd EGYED-ZSIGMOND" />
     <script type="text/javascript" src="partieJavascript.js"></script>
 
-    <link rel="stylesheet" href="ajaxdom.css">
+    <link rel="stylesheet" href="ajaxdom.css" />
   </head>
 
   <body onload="populateDatalist();">
@@ -34,8 +34,7 @@
     />
     <input name="text" type="text" list="codelist" id="myText1" value="Toto" />
 
-    <datalist id="codelist">
-    </datalist>
+    <datalist id="codelist"> </datalist>
 
     <input
       name="button4"
@@ -77,10 +76,17 @@
       value="8. Capter les mouvements de souris sur la carte"
     />
 
+    <input
+      name="button11"
+      type="button"
+      id="myButton11"
+      onClick="resetAllCountryColors('svgdivworld');"
+      value="11. Enlever le coloriage en vert"
+    />
+
     <p id="svgpexemple"></p>
     <p id="svgpworld"></p>
-    <table id="countryinfo">
-    </table>
+    <table id="countryinfo"></table>
     <div id="svgdivexemple"></div>
     <div id="svgdivworld"></div>
     <p>

@@ -85,25 +85,76 @@ function getProcessedXML(xml, xsl, param) {
   return xsltProcessor.transformToDocument(xmlDocument);
 }
 
+function resetAllCountryColors(id) {
+  let worldmap = document.getElementById(id);
+  countries = worldmap.children[0].children[1].children; // wow
+  for (country of countries) {
+    country.style.fill = "#CCCCCC";
+  }
+}
+
+// Question 3
 function setDetails(code) {
   let xml = "../countriesTP.xml";
-  let xsl = "../cherchePays.xml";
-  // Parcours de la liste des noms avec une boucle for et
-  // construction d'une chaine de charactčres contenant les noms séparés par des espaces
-  // Pour avoir la longueur d'une liste : attribut 'length'
-  // Accčs au texte d'un noeud "LastName" : NOM_NOEUD.firstChild.nodeValue
-  getProcessedXML(xml, xsl, code);
-  // Recherche du parent (dont l'id est "here") de l'élément à remplacer dans le document HTML courant
-  var elementHtmlParent = window.document.getElementById(
-    "id_element_a_remplacer"
-  );
+  let xsl = "../cherchePays.xsl";
+
+  let xmlDoc = getProcessedXML(xml, xsl, code);
+
+  let parent = window.document.getElementById("id_element_a_remplacer");
 
   // insérer l'élement transformé dans la page html
-  elementHtmlParent.innerHTML = newXmlDocument.getElementsByTagName(
+  parent.innerHTML = xmlDoc.getElementsByTagName(
     "element_a_recuperer"
   )[0].innerHTML;
 
-  
+  // Question 11
+
+  ///   Get list of all countries that share a language with the original country
+  xsl = "../getAllCountryLanguages.xsl";
+  let xmlDoc2 = getProcessedXML(xml, xsl, code);
+  let languages = xmlDoc2.firstChild.innerHTML.split("\n");
+  // Remove first and last elements, both empty for some reason
+  languages.shift();
+  languages.pop();
+
+  // Remove starting spaces that are there for some reason
+  languages = languages.map(function (lang) {
+    return lang.trim();
+  });
+  // console.log(languages);
+
+  // Get all countries and their associated languages
+  xsl = "../getAllCountriesLangsAsRaw.xsl";
+  let xmlDoc3 = getProcessedXML(xml, xsl, null);
+
+  let countrycodes = xmlDoc3.getElementsByTagName("country");
+  let languageLists = xmlDoc3.getElementsByTagName("languages");
+
+  // iterate over the language lists of all countries and match them to
+  // the languages array created above
+  let results = [];
+  for (let i = 0; i < countrycodes.length; i++) {
+    let langList = languageLists[i];
+    let country = countrycodes[i];
+
+    if (
+      languages.some((elem) => langList.innerHTML.includes(elem)) &&
+      results.indexOf(country) === -1
+    ) {
+      results.push(country.innerHTML);
+    }
+  }
+
+  // reset all colors so that different queries don't overlap
+  resetAllCountryColors("svgdivworld");
+  // finally, paint each country whose code is in the list in green
+  let worldmap = document.getElementById("svgdivworld");
+  countries = worldmap.children[0].children[1].children; // wow
+  for (let i = 0; i < countries.length; i++) {
+    if (results.includes(countries[i].id)) {
+      countries[i].style.fill = "#1aff1a";
+    }
+  }
 }
 
 // Question 4
@@ -148,12 +199,12 @@ function getCountryDetails(code) {
   let xmlDocumentUrl = "../countriesTP.xml";
   let xslDocumentUrl = "../cherchePaysPlus.xsl";
 
-//Question 10: complétez les infromations affichées au bouton 8 avec le nom de la monnaie du pays
+  //Question 10: complétez les infromations affichées au bouton 8 avec le nom de la monnaie du pays
   let urlJson = "https://restcountries.com/v2/alpha/" + code;
   let jsonData = chargerHttpJSON(urlJson);
-  let currency =  jsonData.currencies[0].name;
+  let currency = jsonData.currencies[0].name;
   p = document.createElement("p");
-  p.innerHTML = "The currency of this country is "+ currency;
+  p.innerHTML = "The currency of this country is " + currency;
 
   var newXmlDocument = getProcessedXML(xmlDocumentUrl, xslDocumentUrl, code);
 
@@ -168,54 +219,46 @@ function getCountryDetails(code) {
   // insérer l'élement transformé dans la page html
   elementHtmlParent.removeChild(elementHtmlParent.lastChild);
   let lastElem = elementHtmlParent.lastChild;
-  if(lastElem!= undefined) elementHtmlParent.removeChild(lastElem);
+  if (lastElem != undefined) elementHtmlParent.removeChild(lastElem);
   elementHtmlParent.appendChild(
     newXmlDocument.getElementsByTagName("countryinfo")[0]
   );
   elementHtmlParent.appendChild(p);
-
 }
 
 //Question 8 suite: changez la couleur de pays quand la souris est en dessus
 function highlightCountry(e) {
   if (e.target.attributes.id != undefined) {
     // Change color of country to green
-    e.target.style.fill = "#1aff1a";
-
+    e.target.style.fill = "#66ccff";
     // Insert data into cells
     getCountryDetails(e.target.attributes.id.value);
   }
 }
 
 function resetCountry(e) {
-  console.log("Country left");
   e.target.style.fill = "#CCCCCC";
 }
 
-
 //Question 9: complétez le champ de saisie du bouton 3 avec une fonction d'autocomplétion
-
 function populateDatalist() {
   let datalist = document.getElementById("codelist");
   let xsl = "../getAllCodes.xsl";
   let xml = "../countriesTP.xml";
 
   let newXml = getProcessedXML(xml, xsl, null);
-  
+
   let codes = newXml.firstChild.innerHTML.split(" ");
   console.log(codes);
   codes.forEach((code) => {
     let option = document.createElement("option");
     option.value = code;
     datalist.appendChild(option);
-  })
+  });
 }
 
-
-//Question 11: Coloriez en vert  sur  le plan les pays où les  langues du pays sélectionné 
+//Question 11: Coloriez en vert  sur  le plan les pays où les  langues du pays sélectionné
 // dans le  champ de saisie du bouton  3 sont également parlées
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Bouton2_ajaxEmployees(xmlDocumentUrl) {
